@@ -1,5 +1,5 @@
 
-import {Args, Arg, Query, Resolver, Mutation, Ctx} from "type-graphql";
+import {Args, Arg, Query, Resolver, Mutation, Ctx, FieldResolver, Root} from "type-graphql";
 import {Recipe} from "../../types/recipe/Recipe";
 import {GetRecipeArgs} from "../../argsType/GetRecipeArgs";
 import {RecipeRecord} from "../../inputTypes/recipe/RecipeRecord";
@@ -27,7 +27,7 @@ const recipesData: Recipe[] = [
     }
 ];
 
-@Resolver()
+@Resolver(() => Recipe)
 export class RecipeResolver {
 
     @Query(() => [Recipe])
@@ -70,5 +70,10 @@ export class RecipeResolver {
         recipe!.ratings!.push(rate);
         recipe!.averageRating = recipe!.ratings!.reduce((acc, curr) => acc + curr.value, 0) / recipe!.ratings!.length;
         return recipe!;
+    }
+
+    @FieldResolver(() => String)
+    async cookName(@Root() recipe: Recipe) : Promise<string> {
+        return "Ujjval Sharma"
     }
 }

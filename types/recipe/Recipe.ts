@@ -1,4 +1,4 @@
-import {Field, ObjectType, ID, Int, Float} from "type-graphql";
+import {Field, ObjectType, ID, Int, Float, Arg} from "type-graphql";
 import {Rate} from "../rating/Rate";
 import {IsOptional} from "class-validator";
 
@@ -12,4 +12,9 @@ export class Recipe {
     ratings?: Rate[]
     @Field(type => Float, {description : "Average Rating", nullable : true})
     averageRating?: number;
+
+    @Field(type => Int, {nullable : true})
+    cost(@Arg("quantity", type => Int) quantity: number) : number {
+        return quantity * 100;
+    }
 }
