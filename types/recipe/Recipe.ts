@@ -1,11 +1,17 @@
-import {Field, ObjectType, ID, Int, Float, Arg} from "type-graphql";
+import {Field, ObjectType, ID, Int, Float, Arg, registerEnumType} from "type-graphql";
 import {Rate} from "../rating/Rate";
-import {IsOptional} from "class-validator";
+import {BaseType} from "../baseType";
 
-@ObjectType()
-export class Recipe {
-    @Field(type => ID)
-    id: string;
+export enum Category {
+    VEG = "VEG",
+    NON_VEG = "NON_VEG"
+}
+
+registerEnumType(Category, {name : "Category"});
+
+@ObjectType({implements : BaseType})
+export class Recipe extends BaseType{
+
     @Field(type => String)
     title:string;
     @Field( type => [Rate])
@@ -13,8 +19,11 @@ export class Recipe {
     @Field(type => Float, {description : "Average Rating", nullable : true})
     averageRating?: number;
 
-    @Field(type => Int, {nullable : true})
-    cost(@Arg("quantity", type => Int) quantity: number) : number {
+    @Field(type => Category, {nullable : true, defaultValue : Category.VEG})
+    category?: Category;
+
+    @Field(type => Int, {nullable : true, defaultValue : 10})
+    cost?(@Arg("quantity", type => Int) quantity: number) : number {
         return quantity * 100;
     }
 }

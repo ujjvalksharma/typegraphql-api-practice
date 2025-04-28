@@ -1,6 +1,6 @@
 
 import {Args, Arg, Query, Resolver, Mutation, Ctx, FieldResolver, Root} from "type-graphql";
-import {Recipe} from "../../types/recipe/Recipe";
+import {Category, Recipe} from "../../types/recipe/Recipe";
 import {GetRecipeArgs} from "../../argsType/GetRecipeArgs";
 import {RecipeRecord} from "../../inputTypes/recipe/RecipeRecord";
 import {Context} from "node:vm";
@@ -70,6 +70,13 @@ export class RecipeResolver {
         recipe!.ratings!.push(rate);
         recipe!.averageRating = recipe!.ratings!.reduce((acc, curr) => acc + curr.value, 0) / recipe!.ratings!.length;
         return recipe!;
+    }
+
+    @Mutation(() => Recipe)
+    updateCategoryOfRecipe(@Arg( "recipeId", () => String) recipeId: String,
+        @Arg( "category", () => Category) category: Category){
+        recipesData.find(recipe => recipe.id === recipeId).category = category;
+        return recipesData.find(recipe => recipe.id === recipeId);
     }
 
     @FieldResolver(() => String)
